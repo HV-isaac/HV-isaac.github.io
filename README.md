@@ -14,10 +14,15 @@ Playwright para el PDF · GitHub Actions para el despliegue.
 
 ```bash
 npm install
-npx playwright install chromium   # solo para generar el PDF
+npx playwright install chromium   # necesario para generar el PDF
 cp .env.example .env.local        # y rellenar los valores
+npm run build:full                # genera los PDF (ver nota abajo)
 npm run dev
 ```
+
+> **La primera vez hay que ejecutar `npm run build:full`.** Los PDF los produce la
+> build, no el servidor de desarrollo, así que hasta entonces el botón «Descargar CV
+> en PDF» devuelve 404. `npm run dev` avisa si faltan.
 
 | Ruta | Qué es |
 |---|---|
@@ -31,7 +36,7 @@ npm run dev
 |---|---|
 | `npm run dev` | Servidor de desarrollo |
 | `npm run build` | Genera el sitio estático en `out/` |
-| `npm run pdf` | Imprime las rutas `/print/` a PDF dentro de `out/` (requiere un build previo) |
+| `npm run pdf` | Imprime las rutas `/print/` a PDF en `out/` y `public/` (requiere un build previo) |
 | `npm run build:full` | `build` + `pdf` — es lo que ejecuta el CI |
 | `npm run serve` | Sirve `out/` tal como lo hará GitHub Pages, para detectar 404 antes de desplegar |
 | `npm run check` | Recorre las cuatro rutas y los PDFs buscando 404 y errores de consola |
@@ -105,9 +110,16 @@ Dos modos degradados que hay que mantener funcionando:
 
 [`scripts/generate-pdf.mjs`](scripts/generate-pdf.mjs) levanta un servidor estático sobre
 `out/`, abre `/print/` y `/en/print/` en Chromium y las imprime a A4. Se ejecuta **después**
-de `next build`, así que los PDFs aparecen en `out/` justo antes del despliegue; los botones
-de descarga son enlaces a esos archivos, no imports, y por eso no importa que no existan
-mientras Next construye.
+de `next build`; los botones de descarga son enlaces a esos archivos, no imports, y por eso
+no importa que no existan mientras Next construye.
+
+Cada PDF se escribe en **dos** sitios:
+
+- `out/` — lo que se despliega en esa misma ejecución.
+- `public/` — para que `next dev` pueda servirlo. El servidor de desarrollo no ve `out/`,
+  así que sin esta copia el botón de descarga daría 404 durante todo el desarrollo.
+
+Ninguna de las dos copias se versiona: se regeneran en cada build.
 
 Las rutas de impresión **no** reutilizan los componentes de la web: usan
 [`src/components/print/`](src/components/print/PrintResume.tsx), una maquetación aparte de

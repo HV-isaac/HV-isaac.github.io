@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "predev": "node scripts/warn-missing-pdf.mjs",
     "dev": "next dev",
     "build": "next build",
     "pdf": "node scripts/generate-pdf.mjs",

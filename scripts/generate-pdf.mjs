@@ -5,21 +5,38 @@ import { chromium } from "playwright";
 import { createStaticServer, listen } from "./static-server.mjs";
 
 const OUT = path.resolve(fileURLToPath(new URL("../out", import.meta.url)));
+const PUBLIC = path.resolve(fileURLToPath(new URL("../public", import.meta.url)));
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
 /**
  * Genera el PDF imprimiendo la propia web ya construida, de modo que el PDF no
  * puede quedar desincronizado del sitio.
  *
- * Se ejecuta DESPUÉS de `next build`: escribe los archivos dentro de `out/`,
- * justo antes de que se suban a GitHub Pages. Los botones de descarga son
- * `<a href>` a estas rutas, no imports, así que no importa que no existan
- * mientras Next construye.
+ * Se ejecuta DESPUÉS de `next build`, y escribe cada PDF en dos sitios:
+ *
+ *   - `out/`    — lo que se despliega en esta misma ejecución.
+ *   - `public/` — para que el servidor de desarrollo pueda servirlo, ya que
+ *                 `next dev` no ve `out/`. Sin esta copia el botón de descarga
+ *                 daría 404 durante todo el desarrollo.
+ *
+ * Los botones son `<a href>` a estas rutas, no imports, así que no importa que
+ * el archivo no exista mientras Next construye.
  */
 const TARGETS = [
   { locale: "es", route: "/print/", file: "cv-isaac-hernandez-es.pdf" },
   { locale: "en", route: "/en/print/", file: "cv-isaac-hernandez-en.pdf" },
 ];
+
+// Imprimir requiere el sitio ya construido. Sin esta comprobación el fallo
+// aparecería como un 404 dentro de Playwright, mucho más difícil de leer.
+try {
+  await fs.access(path.join(OUT, "index.html"));
+} catch {
+  console.error("No existe out/index.html. Ejecuta primero `npm run build` (o usa `npm run build:full`).");
+  process.exit(1);
+}
+
+await fs.mkdir(PUBLIC, { recursive: true });
 
 const server = createStaticServer({ basePath });
 const port = await listen(server);
@@ -44,16 +61,19 @@ try {
     // Sin esto la primera página puede imprimirse con la fuente de reserva.
     await page.evaluate(() => document.fonts.ready);
 
-    await page.pdf({
-      path: path.join(OUT, target.file),
+    const pdf = await page.pdf({
       format: "A4",
       printBackground: true,
       preferCSSPageSize: true, // respeta el @page de globals.css
       tagged: true,            // PDF accesible, con estructura semántica
     });
 
-    const { size } = await fs.stat(path.join(OUT, target.file));
-    console.log(`✓ ${target.file}  (${(size / 1024).toFixed(0)} KB)`);
+    await Promise.all([
+      fs.writeFile(path.join(OUT, target.file), pdf),
+      fs.writeFile(path.join(PUBLIC, target.file), pdf),
+    ]);
+
+    console.log(`✓ ${target.file}  (${(pdf.length / 1024).toFixed(0)} KB)  → out/ y public/`);
     await page.close();
   }
 } finally {
