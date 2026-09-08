@@ -50,7 +50,15 @@ export function RootHtml({
   theme?: boolean;
 }) {
   return (
-    <html lang={lang} className="no-js" suppressHydrationWarning>
+    // Las variables de next/font van en <html>, no en <body>: Tailwind emite
+    // `--font-sans: var(--font-inter), ...` bajo `:root`, así que si la variable
+    // se define más abajo en el árbol la declaración queda inválida y toda la
+    // página cae a la fuente del sistema sin previo aviso.
+    <html
+      lang={lang}
+      className={`no-js ${inter.variable} ${mono.variable}`}
+      suppressHydrationWarning
+    >
       {theme && (
         // La regla `no-head-element` es del Pages Router: allí había que usar
         // `next/head`. En el App Router el layout raíz renderiza <head> directamente.
@@ -59,7 +67,7 @@ export function RootHtml({
           <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         </head>
       )}
-      <body className={`${inter.variable} ${mono.variable} font-sans`}>{children}</body>
+      <body className="font-sans">{children}</body>
     </html>
   );
 }
