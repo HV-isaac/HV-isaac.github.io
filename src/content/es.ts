@@ -2,21 +2,21 @@ import type { ResumeData } from "./types";
 
 /**
  * ────────────────────────────────────────────────────────────────────────────
- *  DATOS PENDIENTES DE CONFIRMAR  (buscar "TODO" en este archivo)
- *  - Nombre completo tal como quieres que aparezca.
- *  - URLs reales de GitHub y LinkedIn.
+ *  PENDIENTE  (buscar "TODO" en este archivo)
  *  - Rangos de fechas de cada puesto: `period` es opcional a propósito, así que
  *    mientras no lo llenes simplemente no se muestra ninguna fecha. Nada de
  *    fechas inventadas.
+ *  - Logros concretos en Koud: qué construiste, para qué servía y, si se puede,
+ *    con un resultado medible.
  *  - Revisar la lista de tecnologías: están las que se dedujeron de tus
- *    proyectos, pero conviene que confirmes y añadas las que falten.
+ *    proyectos, pero conviene confirmar y añadir las que falten.
  * ────────────────────────────────────────────────────────────────────────────
  */
 
 const NAME = "Jesús Isaac Hernández Valdez";
 const EMAIL = "hernandezisaac2142@gmail.com";
 const GITHUB = "https://github.com/HV-isaac";
-const LINKEDIN = "https://www.linkedin.com/in/tu-usuario"; // TODO
+const LINKEDIN = "https://www.linkedin.com/in/jesus-isaac-hernandez/";
 
 export const es: ResumeData = {
   locale: "es",
