@@ -11,7 +11,7 @@ import { fileURLToPath } from "node:url";
  */
 const PUBLIC = path.resolve(fileURLToPath(new URL("../public", import.meta.url)));
 
-const missing = ["cv-isaac-hernandez-es.pdf", "cv-isaac-hernandez-en.pdf"].filter(
+const missing = ["Jesus-Isaac-Hernandez-Valdez-CV-es.pdf", "Jesus-Isaac-Hernandez-Valdez-CV-en.pdf"].filter(
   (file) => !fs.existsSync(path.join(PUBLIC, file)),
 );
 

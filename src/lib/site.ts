@@ -11,8 +11,18 @@ export const localePath: Record<Locale, string> = { es: "/", en: "/en/" };
 
 export const otherLocale = (locale: Locale): Locale => (locale === "es" ? "en" : "es");
 
-/** Nombre de archivo del PDF generado para cada idioma. */
-export const pdfFile = (locale: Locale) => `cv-isaac-hernandez-${locale}.pdf`;
+/**
+ * Nombre del PDF descargable. Lleva el nombre completo porque acaba en la
+ * carpeta de descargas de quien lo abre: "cv-es.pdf" allí no dice nada.
+ *
+ * Sin acentos a propósito, para no depender de cómo escape cada cliente los
+ * caracteres no ASCII en una URL.
+ *
+ * `scripts/generate-pdf.mjs` genera exactamente estos nombres; `npm run check`
+ * comprueba que no se hayan separado, leyendo el enlace real del HTML ya
+ * construido.
+ */
+export const pdfFile = (locale: Locale) => `Jesus-Isaac-Hernandez-Valdez-CV-${locale}.pdf`;
 
 /**
  * URL pública del sitio. Se usa solo para metadatos absolutos (Open Graph).

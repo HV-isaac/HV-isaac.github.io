@@ -23,8 +23,8 @@ const basePath = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
  * el archivo no exista mientras Next construye.
  */
 const TARGETS = [
-  { locale: "es", route: "/print/", file: "cv-isaac-hernandez-es.pdf" },
-  { locale: "en", route: "/en/print/", file: "cv-isaac-hernandez-en.pdf" },
+  { locale: "es", route: "/print/", file: "Jesus-Isaac-Hernandez-Valdez-CV-es.pdf" },
+  { locale: "en", route: "/en/print/", file: "Jesus-Isaac-Hernandez-Valdez-CV-en.pdf" },
 ];
 
 // Imprimir requiere el sitio ya construido. Sin esta comprobación el fallo

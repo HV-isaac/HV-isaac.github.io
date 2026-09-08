@@ -13,9 +13,9 @@ import type { ResumeData } from "./types";
  * ────────────────────────────────────────────────────────────────────────────
  */
 
-const NAME = "Isaac Hernández"; // TODO: confirmar nombre completo
+const NAME = "Jesús Isaac Hernández Valdez";
 const EMAIL = "hernandezisaac2142@gmail.com";
-const GITHUB = "https://github.com/tu-usuario"; // TODO
+const GITHUB = "https://github.com/HV-isaac";
 const LINKEDIN = "https://www.linkedin.com/in/tu-usuario"; // TODO
 
 export const es: ResumeData = {
