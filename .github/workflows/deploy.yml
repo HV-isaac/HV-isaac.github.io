@@ -1,0 +1,73 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Un despliegue a la vez; si llegan dos pushes seguidos, gana el último.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      # Variables del repositorio (Settings → Secrets and variables → Actions → Variables).
+      # BASE_PATH va vacío si el repo se llama <usuario>.github.io.
+      NEXT_PUBLIC_BASE_PATH: ${{ vars.BASE_PATH }}
+      NEXT_PUBLIC_SITE_URL: ${{ vars.SITE_URL }}
+      # Secreto del repositorio: la access key de Web3Forms.
+      NEXT_PUBLIC_WEB3FORMS_KEY: ${{ secrets.WEB3FORMS_KEY }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      # El navegador pesa ~100 MB: cachearlo ahorra la mayor parte del tiempo de CI.
+      - name: Cache de Chromium (Playwright)
+        id: playwright-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+
+      - name: Instalar Chromium
+        run: npx playwright install --with-deps chromium
+
+      # Construye el sitio y, a continuación, imprime las rutas /print/ a PDF
+      # dentro de out/.
+      - name: Construir sitio y PDFs
+        run: npm run build:full
+
+      # GitHub Pages sirve el artefacto tal cual, pero .nojekyll evita que
+      # cualquier ruta clásica de Jekyll ignore la carpeta _next/.
+      - run: touch out/.nojekyll
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: out
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
