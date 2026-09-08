@@ -1,8 +1,9 @@
 # CV — sitio web
 
-CV personal bilingüe (español / inglés) publicado como sitio estático en GitHub Pages.
-Genera el PDF descargable a partir de la propia web, así que la versión impresa nunca
-se desincroniza de la versión en línea.
+Portafolio y CV personal bilingüe (español / inglés) publicado como sitio estático en
+GitHub Pages. La web es una pieza con movimiento —índice lateral que sigue el scroll,
+entradas escalonadas, filtros y tarjetas reactivas al puntero— y el PDF descargable es un
+CV sobrio de dos páginas. Ambos leen exactamente los mismos datos.
 
 **Stack:** Next.js 16 (App Router, `output: 'export'`) · TypeScript · Tailwind CSS 4 ·
 Playwright para el PDF · GitHub Actions para el despliegue.
@@ -33,6 +34,7 @@ npm run dev
 | `npm run pdf` | Imprime las rutas `/print/` a PDF dentro de `out/` (requiere un build previo) |
 | `npm run build:full` | `build` + `pdf` — es lo que ejecuta el CI |
 | `npm run serve` | Sirve `out/` tal como lo hará GitHub Pages, para detectar 404 antes de desplegar |
+| `npm run check` | Recorre las cuatro rutas y los PDFs buscando 404 y errores de consola |
 
 ## Editar el contenido
 
@@ -80,6 +82,25 @@ raíz. Para reproducirlo en local:
 NEXT_PUBLIC_BASE_PATH=/cv npm run build:full && NEXT_PUBLIC_BASE_PATH=/cv npm run serve
 ```
 
+## Movimiento e interacción
+
+| Pieza | Dónde | Qué hace |
+|---|---|---|
+| Entrada al hacer scroll | [`useReveal`](src/hooks/useReveal.ts) + [`Reveal`](src/components/Reveal.tsx) | Un único `IntersectionObserver` compartido revela cada bloque una sola vez. El retardo escalonado sale de [`stagger`](src/lib/stagger.ts) |
+| Índice lateral | [`useScrollSpy`](src/hooks/useScrollSpy.ts) + [`SideNav`](src/components/SideNav.tsx) | Resalta la sección en pantalla; con varias a la vista gana la que ocupa más |
+| Borde que sigue al puntero | [`useSpotlight`](src/hooks/useSpotlight.ts) | Escribe la posición en variables CSS, sin re-renderizar en cada `pointermove` |
+| Rol que se teclea | [`RoleRotator`](src/components/RoleRotator.tsx) | Máquina de estados con una transición por tic |
+| Filtro de proyectos | [`Projects`](src/components/sections/Projects.tsx) | Las etiquetas salen del propio contenido |
+
+Dos modos degradados que hay que mantener funcionando:
+
+- **`prefers-reduced-motion`** — un único bloque al final de
+  [`globals.css`](src/app/globals.css) apaga toda animación CSS, y
+  [`usePrefersReducedMotion`](src/hooks/usePrefersReducedMotion.ts) detiene además lo que se
+  anima desde JavaScript, que el CSS no puede parar.
+- **Sin JavaScript** — los bloques con entrada animada arrancan visibles gracias a la clase
+  `no-js` en `<html>`, que el script en línea retira al cargar.
+
 ## Cómo se genera el PDF
 
 [`scripts/generate-pdf.mjs`](scripts/generate-pdf.mjs) levanta un servidor estático sobre
@@ -88,14 +109,20 @@ de `next build`, así que los PDFs aparecen en `out/` justo antes del despliegue
 de descarga son enlaces a esos archivos, no imports, y por eso no importa que no existan
 mientras Next construye.
 
-Las páginas de impresión reutilizan exactamente los mismos componentes que la web. El
-formato de papel, los márgenes y los saltos de página se controlan desde el bloque
+Las rutas de impresión **no** reutilizan los componentes de la web: usan
+[`src/components/print/`](src/components/print/PrintResume.tsx), una maquetación aparte de
+una sola columna. Un portafolio con tarjetas, filtros y animación no es lo que se quiere en
+un CV impreso. Lo que sí comparten —y es lo que de verdad no puede desincronizarse— son los
+datos: ambos leen el mismo `ResumeData`.
+
+El formato de papel, los márgenes y los saltos de página se controlan desde el bloque
 `@media print` de [`src/app/globals.css`](src/app/globals.css).
 
 ## Añadir un tercer idioma
 
 1. Nuevo archivo en `src/content/` que cumpla `ResumeData`.
 2. Registrarlo en `src/lib/site.ts` (`resumes`, `localePath`).
-3. Nuevo route group en `src/app/` con su propio layout raíz — cada idioma necesita el
-   suyo porque `lang` va en `<html>` y solo un layout raíz puede renderizarlo.
+3. Dos route groups nuevos en `src/app/` (web e impresión), cada uno con su layout raíz —
+   cada idioma necesita el suyo porque `lang` va en `<html>` y solo un layout raíz puede
+   renderizarlo.
 4. Añadir la ruta a `TARGETS` en `scripts/generate-pdf.mjs`.

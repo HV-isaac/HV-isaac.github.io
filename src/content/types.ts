@@ -15,6 +15,11 @@ export interface Link {
 export interface Profile {
   name: string;
   title: string;
+  /**
+   * Roles que rota el hero, uno tras otro. Deben ser puestos que el usuario ha
+   * ocupado de verdad: es lo primero que lee un reclutador.
+   */
+  roles: string[];
   location: string;
   /** Párrafo de presentación. Se muestra en el hero y encabeza el PDF. */
   summary: string;
@@ -39,8 +44,20 @@ export interface Project {
   name: string;
   description: string;
   highlights: string[];
+  /** Etiquetas por las que se puede filtrar la rejilla de proyectos. */
+  tags: string[];
   tech?: string[];
   href?: string;
+}
+
+/**
+ * Cifras del encabezado. Es opcional a propósito y arranca vacío: en un CV una
+ * cifra inventada hace más daño que la ausencia del bloque, que sencillamente
+ * no se renderiza.
+ */
+export interface Stat {
+  value: string;
+  label: string;
 }
 
 export interface SkillGroup {
@@ -68,6 +85,11 @@ export interface UIStrings {
   };
   downloadPdf: string;
   contactMe: string;
+  /** Etiqueta del filtro que muestra todos los proyectos. */
+  allProjects: string;
+  expand: string;
+  collapse: string;
+  scrollHint: string;
   switchLanguage: string;
   switchLanguageShort: string;
   toggleTheme: string;
@@ -94,6 +116,7 @@ export interface ResumeData {
     description: string;
   };
   profile: Profile;
+  stats: Stat[];
   /** Sección propia para el trabajo con IA y agentes: es el diferenciador del perfil. */
   ai: {
     summary: string;

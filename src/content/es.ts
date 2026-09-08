@@ -30,6 +30,7 @@ export const es: ResumeData = {
   profile: {
     name: NAME,
     title: "Ingeniero de Software · Desarrollador Fullstack",
+    roles: ["Fullstack", "Frontend", "Backend", "Móvil", "Desarrollo con IA"],
     location: "Navojoa, Sonora · Trabajo remoto",
     summary:
       "Desarrollador fullstack con experiencia entregando aplicaciones web y móviles de principio a fin, desde el diseño de la base de datos hasta la interfaz que usa el cliente final. He construido sistemas de gestión de servicios automotrices, logística y facturación, además de proyectos propios llevados a producción. Trabajo el día a día con desarrollo asistido por IA —agentes, herramientas, MCP y hooks— integrándolo como parte real del proceso de ingeniería, no como un extra.",
@@ -40,6 +41,11 @@ export const es: ResumeData = {
       { label: "LinkedIn", href: LINKEDIN },
     ],
   },
+
+  // Vacío a propósito: rellénalo solo con cifras que puedas sostener en una
+  // entrevista. Mientras esté vacío, el bloque no se renderiza.
+  // Ej.: { value: "5+", label: "años desarrollando" }
+  stats: [],
 
   ai: {
     summary:
@@ -99,6 +105,7 @@ export const es: ResumeData = {
   projects: [
     {
       name: "Reportes ciudadanos — Navojoa",
+      tags: ["Móvil", "Panel admin", "Sector público"],
       description:
         "Aplicación móvil que permite a la ciudadanía levantar reportes de incidencias en la ciudad, acompañada de un panel administrativo donde los servidores públicos dan seguimiento y resolución a cada caso.",
       highlights: [
@@ -109,6 +116,7 @@ export const es: ResumeData = {
     },
     {
       name: "Gestión de servicios y refacciones automotrices",
+      tags: ["Web", "Gestión", "Inventario"],
       description:
         "Plataforma web para talleres: control de inventario de refacciones, órdenes de servicio y seguimiento del estado de cada vehículo.",
       highlights: [
@@ -117,6 +125,7 @@ export const es: ResumeData = {
     },
     {
       name: "Logística y facturación",
+      tags: ["Web", "Gestión", "Facturación"],
       description:
         "Aplicaciones de gestión logística y de emisión de facturas desarrolladas para distintas empresas.",
       highlights: [
@@ -175,6 +184,10 @@ export const es: ResumeData = {
     },
     downloadPdf: "Descargar CV en PDF",
     contactMe: "Contáctame",
+    allProjects: "Todos",
+    expand: "Ver detalle",
+    collapse: "Ocultar detalle",
+    scrollHint: "Desliza para ver más",
     switchLanguage: "Ver esta página en inglés",
     switchLanguageShort: "EN",
     toggleTheme: "Cambiar entre tema claro y oscuro",

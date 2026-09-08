@@ -15,7 +15,9 @@ const ENDPOINT = "https://api.web3forms.com/submit";
 type Status = "idle" | "sending" | "success" | "error";
 
 const field =
-  "w-full rounded-lg border border-border bg-surface px-3.5 py-2.5 text-[15px] text-fg placeholder:text-muted/60 transition-colors focus:border-accent focus:outline-none";
+  "w-full rounded-lg border border-border bg-bg/60 px-3.5 py-2.5 text-[15px] text-fg transition-colors focus:border-accent focus:outline-none";
+
+const label = "mb-1.5 block font-mono text-xs uppercase tracking-[0.14em] text-muted";
 
 export function ContactForm({ data }: { data: ResumeData }) {
   const t = data.ui.form;
@@ -25,11 +27,11 @@ export function ContactForm({ data }: { data: ResumeData }) {
   // fallar en silencio al pulsar «Enviar» se ofrece el correo directo.
   if (!ACCESS_KEY) {
     return (
-      <div className="rounded-xl border border-border bg-surface p-6">
+      <div className="rounded-xl border border-border bg-surface/60 p-6">
         <p className="text-muted">{t.fallbackIntro}</p>
         <a
           href={`mailto:${data.profile.email}`}
-          className="mt-4 inline-flex rounded-lg bg-accent px-5 py-2.5 text-sm font-medium text-on-accent transition-opacity hover:opacity-90"
+          className="mt-4 inline-flex rounded-full bg-accent px-5 py-2.5 text-sm font-medium text-on-accent transition-transform duration-200 hover:-translate-y-0.5"
         >
           {t.fallbackCta}
         </a>
@@ -62,7 +64,7 @@ export function ContactForm({ data }: { data: ResumeData }) {
   }
 
   return (
-    <form onSubmit={onSubmit} className="rounded-xl border border-border bg-surface p-6">
+    <form onSubmit={onSubmit} className="rounded-xl border border-border bg-surface/60 p-6">
       <p className="text-muted">{t.intro}</p>
 
       <input type="hidden" name="access_key" value={ACCESS_KEY} />
@@ -85,17 +87,17 @@ export function ContactForm({ data }: { data: ResumeData }) {
 
       <div className="mt-5 grid gap-4 sm:grid-cols-2">
         <label className="block">
-          <span className="mb-1.5 block text-sm font-medium">{t.name}</span>
+          <span className={label}>{t.name}</span>
           <input type="text" name="name" required autoComplete="name" className={field} />
         </label>
         <label className="block">
-          <span className="mb-1.5 block text-sm font-medium">{t.email}</span>
+          <span className={label}>{t.email}</span>
           <input type="email" name="email" required autoComplete="email" className={field} />
         </label>
       </div>
 
       <label className="mt-4 block">
-        <span className="mb-1.5 block text-sm font-medium">{t.message}</span>
+        <span className={label}>{t.message}</span>
         <textarea name="message" required rows={5} className={`${field} resize-y`} />
       </label>
 
@@ -103,7 +105,7 @@ export function ContactForm({ data }: { data: ResumeData }) {
         <button
           type="submit"
           disabled={status === "sending"}
-          className="rounded-lg bg-accent px-5 py-2.5 text-sm font-medium text-on-accent transition-opacity hover:opacity-90 disabled:opacity-60"
+          className="rounded-full bg-accent px-5 py-2.5 text-sm font-medium text-on-accent transition-transform duration-200 hover:-translate-y-0.5 disabled:translate-y-0 disabled:opacity-60"
         >
           {status === "sending" ? t.sending : t.submit}
         </button>

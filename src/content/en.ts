@@ -22,6 +22,7 @@ export const en: ResumeData = {
   profile: {
     name: NAME,
     title: "Software Engineer · Fullstack Developer",
+    roles: ["Fullstack", "Frontend", "Backend", "Mobile", "AI-assisted"],
     location: "Navojoa, Sonora, Mexico · Open to remote",
     summary:
       "Fullstack developer with a track record of shipping web and mobile applications end to end, from database design to the interface the end user works with. I have built automotive service management, logistics and invoicing systems, along with personal projects taken all the way to production. AI-assisted development —agents, tools, MCP and hooks— is part of my daily engineering process, not an add-on.",
@@ -32,6 +33,9 @@ export const en: ResumeData = {
       { label: "LinkedIn", href: LINKEDIN },
     ],
   },
+
+  // Debe reflejar exactamente lo mismo que `stats` en es.ts.
+  stats: [],
 
   ai: {
     summary:
@@ -90,6 +94,7 @@ export const en: ResumeData = {
   projects: [
     {
       name: "Citizen Reports — Navojoa",
+      tags: ["Mobile", "Admin panel", "Public sector"],
       description:
         "Mobile application that lets residents file reports about issues around the city, paired with an administrative dashboard where public servants track and resolve each case.",
       highlights: [
@@ -100,6 +105,7 @@ export const en: ResumeData = {
     },
     {
       name: "Automotive service & spare-parts management",
+      tags: ["Web", "Management", "Inventory"],
       description:
         "Web platform for repair shops: spare-parts inventory control, work orders and per-vehicle status tracking.",
       highlights: [
@@ -108,6 +114,7 @@ export const en: ResumeData = {
     },
     {
       name: "Logistics & invoicing",
+      tags: ["Web", "Management", "Invoicing"],
       description:
         "Logistics management and invoicing applications built for several companies.",
       highlights: [
@@ -164,6 +171,10 @@ export const en: ResumeData = {
     },
     downloadPdf: "Download CV as PDF",
     contactMe: "Get in touch",
+    allProjects: "All",
+    expand: "Show details",
+    collapse: "Hide details",
+    scrollHint: "Scroll to explore",
     switchLanguage: "View this page in Spanish",
     switchLanguageShort: "ES",
     toggleTheme: "Toggle light and dark theme",

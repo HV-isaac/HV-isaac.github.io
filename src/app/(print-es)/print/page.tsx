@@ -1,4 +1,4 @@
-import { PrintResume } from "@/components/PrintResume";
+import { PrintResume } from "@/components/print/PrintResume";
 import { es } from "@/content/es";
 import { printMetadata } from "@/lib/metadata";
 

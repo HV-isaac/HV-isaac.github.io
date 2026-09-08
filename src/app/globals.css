@@ -2,34 +2,39 @@
 
 /* El tema se controla con la clase `.dark` en <html>, no con prefers-color-scheme
    a secas, porque hay un botón para cambiarlo manualmente. La preferencia del
-   sistema sigue siendo el valor inicial (ver el script inline en layout.tsx). */
+   sistema sigue siendo el valor inicial (ver el script inline en RootHtml). */
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: var(--font-mono-stack), ui-monospace, "SF Mono", "JetBrains Mono", monospace;
 
   --color-bg: #fbfbfa;
   --color-surface: #ffffff;
+  --color-elevated: #ffffff;
   --color-border: #e5e3df;
   --color-fg: #1a1a19;
   --color-muted: #6b6a66;
   --color-accent: #2563eb;
+  --color-accent-2: #7c3aed;
   --color-accent-soft: #eff4ff;
   /* Texto sobre un fondo de acento. No puede ser blanco siempre: en oscuro el
      acento es azul claro y el blanco encima se queda en 2.5:1. */
   --color-on-accent: #ffffff;
 
-  --breakpoint-print: 0px;
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .dark {
-  --color-bg: #101112;
-  --color-surface: #17191b;
-  --color-border: #2a2d30;
+  --color-bg: #08090b;
+  --color-surface: #0e1013;
+  --color-elevated: #14171b;
+  --color-border: #23272d;
   --color-fg: #ecebe8;
-  --color-muted: #9c9a95;
+  --color-muted: #9a9994;
   --color-accent: #7aa2ff;
-  --color-accent-soft: #1b2436;
+  --color-accent-2: #b78cff;
+  --color-accent-soft: #151d2e;
   --color-on-accent: #0b1220;
 }
 
@@ -43,30 +48,170 @@
     color-scheme: dark;
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    html {
-      scroll-behavior: auto;
-    }
-  }
-
   body {
     background-color: var(--color-bg);
     color: var(--color-fg);
     -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
   }
 
   /* Un foco visible y consistente en todo el sitio: es la única forma de navegar
-     con teclado y suele ser lo primero que falla en una auditoría de accesibilidad. */
+     con teclado y suele ser lo primero que falla en una auditoría. */
   :focus-visible {
     outline: 2px solid var(--color-accent);
-    outline-offset: 2px;
-    border-radius: 2px;
+    outline-offset: 3px;
+    border-radius: 4px;
   }
 }
 
+/* ── Movimiento ───────────────────────────────────────────────────────────────
+   Todo lo animado se apaga entero bajo `prefers-reduced-motion`. El interruptor
+   está al final del archivo, en un único bloque, para que sea imposible añadir
+   una animación nueva y olvidarse de cubrirla. */
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 20px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes aurora-drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  33% {
+    transform: translate3d(6%, -8%, 0) scale(1.12);
+  }
+  66% {
+    transform: translate3d(-7%, 5%, 0) scale(0.94);
+  }
+}
+
+@keyframes caret-blink {
+  0%,
+  45% {
+    opacity: 1;
+  }
+  55%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes marquee {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    /* -50% porque la pista contiene la lista duplicada: al llegar a la mitad,
+       el fotograma coincide exactamente con el inicio y el bucle no salta. */
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+/* Entrada al hacer scroll. El `IntersectionObserver` de `useReveal` añade
+   `data-visible`; el retardo por elemento llega en `--reveal-delay`. */
+.reveal {
+  opacity: 0;
+}
+
+.reveal[data-visible="true"] {
+  animation: fade-up 0.7s var(--ease-out-soft) both;
+  animation-delay: var(--reveal-delay, 0ms);
+}
+
+/* Sin JavaScript el contenido debe verse igual: el observador nunca marcará
+   nada, así que se anula la opacidad de partida. */
+.no-js .reveal {
+  opacity: 1;
+}
+
+/* ── Piezas reutilizables ─────────────────────────────────────────────────── */
+
+/* Manchas de color del hero. Van en un pseudo-elemento y con `blur` grande para
+   que se lean como luz de fondo y no como formas. */
+.aurora {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(72px);
+  opacity: 0.5;
+  will-change: transform;
+  animation: aurora-drift 22s ease-in-out infinite;
+}
+
+.dark .aurora {
+  /* Sobre un fondo casi negro la misma opacidad se pierde; hace falta más para
+     que la luz se lea igual que en claro. */
+  opacity: 0.55;
+  filter: blur(88px);
+}
+
+/* Borde que se ilumina al pasar el cursor, siguiendo la posición del puntero.
+   `--mx`/`--my` las escribe `useSpotlight`. */
+.spotlight {
+  position: relative;
+  isolation: isolate;
+}
+
+.spotlight::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: radial-gradient(
+    16rem circle at var(--mx, 50%) var(--my, 50%),
+    color-mix(in oklab, var(--color-accent) 70%, transparent),
+    transparent 60%
+  );
+  /* Recorta el degradado al contorno de 1px, para que ilumine solo el borde. */
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.35s var(--ease-out-soft);
+  pointer-events: none;
+  z-index: -1;
+}
+
+.spotlight:hover::before,
+.spotlight:focus-within::before {
+  opacity: 1;
+}
+
+.marquee-track {
+  animation: marquee 38s linear infinite;
+}
+
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+.caret {
+  animation: caret-blink 1.1s steps(1) infinite;
+}
+
+/* Retícula de fondo, muy tenue: da textura sin competir con el texto. */
+.grid-bg {
+  background-image:
+    linear-gradient(to right, color-mix(in oklab, var(--color-border) 55%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in oklab, var(--color-border) 55%, transparent) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(ellipse 80% 55% at 50% 0%, #000 40%, transparent 100%);
+}
+
 /* ── Impresión ────────────────────────────────────────────────────────────────
-   Se aplica tanto a la generación del PDF con Playwright como a un Ctrl+P
-   directo desde el navegador. */
+   El PDF es un CV, no el sitio: sin animación, sin color de fondo y en una sola
+   columna. Lo genera `src/components/print/`, que no comparte maquetación con la
+   web (sí comparte los datos, que es lo que no puede desincronizarse). */
 @page {
   size: A4;
   margin: 14mm 14mm 16mm;
@@ -80,6 +225,7 @@
   html.dark {
     --color-bg: #ffffff;
     --color-surface: #ffffff;
+    --color-elevated: #ffffff;
     --color-border: #cfcdc8;
     --color-fg: #000000;
     --color-muted: #33322f;
@@ -114,5 +260,32 @@
   a {
     text-decoration: none;
     color: inherit;
+  }
+
+  .reveal {
+    opacity: 1 !important;
+    animation: none !important;
+  }
+}
+
+/* ── Interruptor general de movimiento ────────────────────────────────────────
+   Un solo bloque que apaga todo: cualquier animación que se añada más arriba
+   queda cubierta sin tener que acordarse de nada. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .reveal {
+    opacity: 1;
   }
 }

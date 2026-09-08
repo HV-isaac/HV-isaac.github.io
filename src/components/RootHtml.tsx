@@ -1,10 +1,18 @@
-import { Inter } from "next/font/google";
+import { Inter, JetBrains_Mono } from "next/font/google";
 import type { Locale } from "@/content/types";
 import "@/app/globals.css";
 
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
+  display: "swap",
+});
+
+// Se usa solo en etiquetas cortas (títulos de sección, fechas, índice): da un
+// aire técnico sin restar legibilidad al texto corrido, que sigue en Inter.
+const mono = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-mono-stack",
   display: "swap",
 });
 
@@ -15,6 +23,9 @@ const inter = Inter({
  */
 const themeScript = `
 (function () {
+  // Sin JavaScript los bloques con animación de entrada se quedarían invisibles,
+  // así que arrancan visibles por CSS (.no-js) y este script retira la marca.
+  document.documentElement.classList.remove('no-js');
   try {
     var stored = localStorage.getItem('theme');
     var dark = stored ? stored === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
@@ -39,7 +50,7 @@ export function RootHtml({
   theme?: boolean;
 }) {
   return (
-    <html lang={lang} suppressHydrationWarning>
+    <html lang={lang} className="no-js" suppressHydrationWarning>
       {theme && (
         // La regla `no-head-element` es del Pages Router: allí había que usar
         // `next/head`. En el App Router el layout raíz renderiza <head> directamente.
@@ -48,7 +59,7 @@ export function RootHtml({
           <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         </head>
       )}
-      <body className={`${inter.variable} font-sans`}>{children}</body>
+      <body className={`${inter.variable} ${mono.variable} font-sans`}>{children}</body>
     </html>
   );
 }
