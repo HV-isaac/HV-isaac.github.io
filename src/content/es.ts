@@ -15,6 +15,7 @@ import type { ResumeData } from "./types";
 
 const NAME = "Jesús Isaac Hernández Valdez";
 const EMAIL = "hernandezisaac2142@gmail.com";
+const PHONE = "+52 642 100 5333";
 const GITHUB = "https://github.com/HV-isaac";
 const LINKEDIN = "https://www.linkedin.com/in/jesus-isaac-hernandez/";
 
@@ -35,7 +36,7 @@ export const es: ResumeData = {
     summary:
       "Desarrollador fullstack con experiencia entregando aplicaciones web y móviles de principio a fin, desde el diseño de la base de datos hasta la interfaz que usa el cliente final. He construido sistemas de gestión de servicios automotrices, logística y facturación, además de proyectos propios llevados a producción. Trabajo el día a día con desarrollo asistido por IA —agentes, herramientas, MCP y hooks— integrándolo como parte real del proceso de ingeniería, no como un extra.",
     email: EMAIL,
-    // phone: "+52 ...", // TODO: descomentar solo si quieres el teléfono público
+    phone: PHONE,
     links: [
       { label: "GitHub", href: GITHUB },
       { label: "LinkedIn", href: LINKEDIN },
@@ -223,6 +224,11 @@ export const es: ResumeData = {
       error: "No se pudo enviar el mensaje. Escríbeme directamente por correo.",
       fallbackIntro: "¿Tienes un proyecto en mente o una vacante que encaje?",
       fallbackCta: "Escríbeme por correo",
+    },
+    whatsapp: {
+      intro: "¿Prefieres algo más directo?",
+      cta: "Escríbeme por WhatsApp",
+      message: "Hola Isaac, vi tu CV y me gustaría platicar contigo.",
     },
     footer: `${NAME} · Hecho con Next.js`,
   },

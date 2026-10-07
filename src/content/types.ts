@@ -24,7 +24,10 @@ export interface Profile {
   /** Párrafo de presentación. Se muestra en el hero y encabeza el PDF. */
   summary: string;
   email: string;
-  /** Opcional: si se omite, no se muestra teléfono en ninguna parte. */
+  /**
+   * Con lada de país, p. ej. "+52 642 123 4567". Opcional: si se omite, no se
+   * muestra teléfono ni botón de WhatsApp en ninguna parte.
+   */
   phone?: string;
   links: Link[];
 }
@@ -116,6 +119,12 @@ export interface UIStrings {
     error: string;
     fallbackIntro: string;
     fallbackCta: string;
+  };
+  whatsapp: {
+    intro: string;
+    cta: string;
+    /** Texto con el que se abre el chat: deja ver de dónde llega cada conversación. */
+    message: string;
   };
   footer: string;
 }
