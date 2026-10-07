@@ -52,6 +52,10 @@ Ambos cumplen el tipo `ResumeData` de [`src/content/types.ts`](src/content/types
 que TypeScript avisa si una traducción se queda atrás respecto a la otra. Los campos
 `period` son opcionales a propósito: mientras estén vacíos no se muestra ninguna fecha.
 
+Los cursos y certificados van en `certifications`, y su PDF en
+[`public/certificados/`](public/certificados/). A diferencia de los PDF del CV, estos sí se
+versionan; `npm run check` comprueba que cada uno enlazado exista.
+
 Busca `TODO` en esos archivos para ver los datos que faltan por rellenar.
 
 ## Formulario de contacto

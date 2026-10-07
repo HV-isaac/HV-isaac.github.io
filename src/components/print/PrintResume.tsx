@@ -129,6 +129,17 @@ export function PrintResume({ data }: { data: ResumeData }) {
             {item.note && <p className="mt-0.5 leading-snug text-muted">{item.note}</p>}
           </article>
         ))}
+        {/* Sin enlace al certificado: una ruta relativa no resuelve dentro del PDF. */}
+        {data.certifications.length > 0 && (
+          <div className="print-block mt-2">
+            <h3 className="font-semibold">{ui.certifications}</h3>
+            <Bullets
+              items={data.certifications.map((item) =>
+                [item.name, item.issuer, item.period].filter(Boolean).join(" · "),
+              )}
+            />
+          </div>
+        )}
       </section>
     </main>
   );

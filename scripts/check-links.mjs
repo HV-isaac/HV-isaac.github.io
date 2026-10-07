@@ -23,7 +23,10 @@ page.on("console", (m) => {
 // aquí a mano: si el nombre del PDF cambia en el sitio pero no en el generador
 // (o al revés), esto lo detecta, en vez de seguir comprobando un nombre viejo
 // que ya no usa nadie.
-const downloads = [];
+//
+// Los certificados se recogen igual, por su extensión: son archivos de
+// `public/` enlazados a mano, y uno que falte daría 404 solo en producción.
+const downloads = new Set();
 
 for (const route of ["/", "/en/", "/print/", "/en/print/"]) {
   const res = await page.goto(`${origin}${route}`, { waitUntil: "networkidle" });
@@ -33,8 +36,13 @@ for (const route of ["/", "/en/", "/print/", "/en/print/"]) {
   if (route.includes("print")) continue;
 
   const href = await page.getAttribute("a[download]", "href");
-  if (href) downloads.push(href);
+  if (href) downloads.add(href);
   else failures.push(`${route} no tiene enlace de descarga`);
+
+  const pdfLinks = await page.$$eval('a[href$=".pdf"]', (links) =>
+    links.map((link) => link.getAttribute("href")),
+  );
+  for (const link of pdfLinks) downloads.add(link);
 }
 
 for (const href of downloads) {

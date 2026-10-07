@@ -137,8 +137,8 @@ export const en: ResumeData = {
       items: ["Flutter", "Dart"],
     },
     {
-      category: "Databases",
-      items: ["PostgreSQL", "MySQL"],
+      category: "Databases (SQL & NoSQL)",
+      items: ["PostgreSQL", "MySQL", "MongoDB", "Firebase Firestore"],
     },
     {
       category: "Tools & practices",
@@ -156,6 +156,21 @@ export const en: ResumeData = {
       degree: "B.Eng. in Software Engineering",
       // period: "", // TODO
       note: "All software development coursework completed. Currently completing the institutional English and cultural-activity requirements.",
+    },
+  ],
+
+  certifications: [
+    {
+      name: "Claude Code 101",
+      issuer: "Anthropic",
+      period: "2026",
+      href: "/certificados/claude-code-101-anthropic.pdf",
+    },
+    {
+      name: "Introduction to AI-Assisted Development",
+      issuer: "MoureDev · BIG school",
+      period: "2026",
+      href: "/certificados/desarrollo-con-ia-mouredev-big-school.pdf",
     },
   ],
 
@@ -179,6 +194,8 @@ export const en: ResumeData = {
     switchLanguageShort: "ES",
     toggleTheme: "Toggle light and dark theme",
     skipToContent: "Skip to content",
+    certifications: "Courses & certifications",
+    viewCertificate: "View certificate",
     form: {
       intro:
         "Got a project in mind or a role that fits? Send me a message and I will get back to you.",

@@ -72,6 +72,14 @@ export interface Education {
   note?: string;
 }
 
+export interface Certification {
+  name: string;
+  issuer: string;
+  period?: string;
+  /** Ruta del PDF dentro de `public/`. Si se omite, no se muestra enlace. */
+  href?: string;
+}
+
 /** Etiquetas de interfaz: todo el texto que no es contenido del CV. */
 export interface UIStrings {
   sections: {
@@ -94,6 +102,9 @@ export interface UIStrings {
   switchLanguageShort: string;
   toggleTheme: string;
   skipToContent: string;
+  /** Título del bloque de cursos dentro de la sección de educación. */
+  certifications: string;
+  viewCertificate: string;
   form: {
     intro: string;
     name: string;
@@ -127,5 +138,7 @@ export interface ResumeData {
   projects: Project[];
   skills: SkillGroup[];
   education: Education[];
+  /** Cursos y certificados. Si está vacío, el bloque no se renderiza. */
+  certifications: Certification[];
   ui: UIStrings;
 }

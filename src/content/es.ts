@@ -150,8 +150,8 @@ export const es: ResumeData = {
       items: ["Flutter", "Dart"],
     },
     {
-      category: "Bases de datos",
-      items: ["PostgreSQL", "MySQL"],
+      category: "Bases de datos (SQL y NoSQL)",
+      items: ["PostgreSQL", "MySQL", "MongoDB", "Firebase Firestore"],
     },
     {
       category: "Herramientas y prácticas",
@@ -169,6 +169,23 @@ export const es: ResumeData = {
       degree: "Ingeniería en Software",
       // period: "", // TODO
       note: "Plan de estudios de desarrollo de software completado en su totalidad. En proceso de acreditar los requisitos institucionales de inglés y actividades culturales.",
+    },
+  ],
+
+  // Los PDF viven en `public/certificados/` y, a diferencia de los del CV, sí
+  // se versionan.
+  certifications: [
+    {
+      name: "Claude Code 101",
+      issuer: "Anthropic",
+      period: "2026",
+      href: "/certificados/claude-code-101-anthropic.pdf",
+    },
+    {
+      name: "Curso de Iniciación al Desarrollo con IA",
+      issuer: "MoureDev · BIG school",
+      period: "2026",
+      href: "/certificados/desarrollo-con-ia-mouredev-big-school.pdf",
     },
   ],
 
@@ -192,6 +209,8 @@ export const es: ResumeData = {
     switchLanguageShort: "EN",
     toggleTheme: "Cambiar entre tema claro y oscuro",
     skipToContent: "Saltar al contenido",
+    certifications: "Cursos y certificaciones",
+    viewCertificate: "Ver certificado",
     form: {
       intro:
         "¿Tienes un proyecto en mente o una vacante que encaje? Escríbeme y te respondo.",
